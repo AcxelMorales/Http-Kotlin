@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Http Request</string>
+    <string name="text_button_red">Validate Red</string>
+</resources>
