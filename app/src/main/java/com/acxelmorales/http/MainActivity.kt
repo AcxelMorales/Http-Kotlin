@@ -7,9 +7,14 @@ import android.util.Log
 
 import android.widget.Button
 import android.widget.Toast
-import java.io.IOException
 
+import com.android.volley.Request
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
+
+import java.io.IOException
 import java.io.InputStream
+import java.lang.Exception
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -36,6 +41,29 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "No tenemos red", Toast.LENGTH_LONG).show()
             }
         }
+
+        val btnVolleyHttpHandler = findViewById<Button>(R.id.btnVolley)
+        btnVolleyHttpHandler.setOnClickListener {
+            if (Network.networkExist(this)) {
+                this.httpHandlingVolley("https://reqres.in/api/users")
+            } else {
+                Toast.makeText(this, "No tenemos red", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun httpHandlingVolley(url: String) {
+        val queue = Volley.newRequestQueue(this)
+        val request = StringRequest(Request.Method.GET, url, {
+            response ->
+            try {
+                Log.d("HTTP VOLLEY", response)
+            } catch (e: Exception) {
+                Log.e("Error", e.message.toString())
+            }
+        }, {  })
+
+        queue.add(request)
     }
 
     @Throws(IOException::class)
