@@ -11,6 +11,10 @@ import android.widget.Toast
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import okhttp3.Call
+
+import okhttp3.OkHttpClient
+import okhttp3.Response
 
 import java.io.IOException
 import java.io.InputStream
@@ -50,6 +54,36 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "No tenemos red", Toast.LENGTH_LONG).show()
             }
         }
+
+        val btnOkHttp = findViewById<Button>(R.id.btnOkHttp)
+        btnOkHttp.setOnClickListener {
+            if (Network.networkExist(this)) {
+                this.okHttpHandling("https://jsonplaceholder.typicode.com/todos/1")
+            } else {
+                Toast.makeText(this, "No tenemos red", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    private fun okHttpHandling(url: String) {
+        val client = OkHttpClient()
+        val request = okhttp3.Request.Builder().url(url).build()
+
+        client.newCall(request).enqueue(object: okhttp3.Callback {
+            override fun onFailure(call: Call?, e: IOException?) {}
+
+            override fun onResponse(call: Call?, response: Response?) {
+                val result = response?.body()?.string()
+
+                this@MainActivity.runOnUiThread {
+                    try {
+                        Log.d("OKHTTP", result.toString())
+                    } catch (e: Exception) {
+                        Log.e("Error", e.message.toString())
+                    }
+                }
+            }
+        })
     }
 
     private fun httpHandlingVolley(url: String) {
