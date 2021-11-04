@@ -16,6 +16,8 @@ import okhttp3.Call
 import okhttp3.OkHttpClient
 import okhttp3.Response
 
+import org.json.JSONObject
+
 import java.io.IOException
 import java.io.InputStream
 import java.lang.Exception
@@ -27,6 +29,8 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        this.jsonNative()
 
         val btnRed = findViewById<Button>(R.id.btnValidateRed)
         btnRed.setOnClickListener {
@@ -120,6 +124,39 @@ class MainActivity : AppCompatActivity() {
             }
         } finally {
             if (inputStream != null) inputStream?.close()
+        }
+    }
+
+    private fun jsonNative() {
+        var peopleList: ArrayList<Persona>? = null
+
+        var respuesta = "{ \"personas\" : [ " +
+                "{" +
+                " \"nombre\" : \"Marcos\" ," +
+                " \"pais\" : \"México\" ," +
+                " \"estado\" : \"soltero\" ," +
+                " \"experiencia\" : 5}," +
+
+                "{" +
+                " \"nombre\" : \"Agustín\" ," +
+                " \"pais\" : \"España\" ," +
+                " \"estado\" : \"casado\" ," +
+                " \"experiencia\" : 16}" +
+                " ]" +
+                " }"
+        val json = JSONObject(respuesta)
+        val personas = json.getJSONArray("personas")
+
+        peopleList = ArrayList()
+
+        for (i in 0 until personas.length()) {
+            val nombre = personas.getJSONObject(i).getString("nombre")
+            val pais = personas.getJSONObject(i).getString("pais")
+            val estado = personas.getJSONObject(i).getString("estado")
+            val exp = personas.getJSONObject(i).getInt("experiencia")
+
+            // Add checkpoint
+            peopleList.add(Persona(nombre, pais, estado, exp))
         }
     }
 
