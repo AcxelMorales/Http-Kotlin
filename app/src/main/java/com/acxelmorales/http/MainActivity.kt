@@ -11,8 +11,10 @@ import android.widget.Toast
 import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import okhttp3.Call
 
+import com.google.gson.Gson
+
+import okhttp3.Call
 import okhttp3.OkHttpClient
 import okhttp3.Response
 
@@ -30,7 +32,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        this.jsonNative()
+        //this.jsonNative()
+        this.jsonToGson()
 
         val btnRed = findViewById<Button>(R.id.btnValidateRed)
         btnRed.setOnClickListener {
@@ -128,7 +131,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun jsonNative() {
-        var peopleList: ArrayList<Persona>? = null
+        var peopleList: ArrayList<Persona>?
 
         var respuesta = "{ \"personas\" : [ " +
                 "{" +
@@ -144,6 +147,7 @@ class MainActivity : AppCompatActivity() {
                 " \"experiencia\" : 16}" +
                 " ]" +
                 " }"
+
         val json = JSONObject(respuesta)
         val personas = json.getJSONArray("personas")
 
@@ -158,6 +162,27 @@ class MainActivity : AppCompatActivity() {
             // Add checkpoint
             peopleList.add(Persona(nombre, pais, estado, exp))
         }
+    }
+
+    private fun jsonToGson() {
+        var respuesta = "{ \"personas\" : [ " +
+                "{" +
+                " \"nombre\" : \"Marcos\" ," +
+                " \"pais\" : \"México\" ," +
+                " \"estado\" : \"soltero\" ," +
+                " \"experiencia\" : 5}," +
+
+                "{" +
+                " \"nombre\" : \"Agustín\" ," +
+                " \"pais\" : \"España\" ," +
+                " \"estado\" : \"casado\" ," +
+                " \"experiencia\" : 16}" +
+                " ]" +
+                " }"
+
+        val gson = Gson()
+        val res = gson.fromJson(respuesta, Personas::class.java)
+        Log.d("RES", res.toString())
     }
 
 }
